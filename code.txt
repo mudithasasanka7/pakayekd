@@ -1,0 +1,159 @@
+<-- calculator -->>
+1) cal.java
+import java.rmi.*;
+import java.rmi.server.*;
+
+public class cal extends UnicastRemoteObject implements calInterface{
+	public cal() throws RemoteException{}
+	
+	public int add(int a,int b) throws RemoteException{
+		System.out.println("Enter value..!");
+		return a+b;
+	}
+	public int sub(int a,int b) throws RemoteException{
+		System.out.println("Enter value..!");
+		return a-b;
+	}
+	public int mul(int a,int b) throws RemoteException{
+		System.out.println("Enter value..!");
+		return a*b;
+	}
+	public int div(int a,int b) throws RemoteException{
+		System.out.println("Enter value..!");
+		return a/b;
+	}
+}
+
+2) calInterface.java
+import java.rmi.*;
+
+public interface calInterface extends Remote{
+	public int add(int a,int b) throws RemoteException;
+	public int sub(int a,int b) throws RemoteException;
+	public int mul(int a,int b) throws RemoteException;
+	public int div(int a,int b) throws RemoteException;
+}
+
+3) calClient.java
+import java.rmi.*;
+import java.util.Scanner;
+
+public class calClient{
+	public static void main(String[] args) {
+		try{
+			calInterface calcu = (calInterface)Naming.lookup("calculator");
+			 Scanner sn = new Scanner(System.in);
+
+			 System.out.println("1. Addtion");
+			 System.out.println("2. Subtration");
+			 System.out.println("3. Multiple");
+			 System.out.println("Divited");
+
+			 System.out.print("Enter your selection: ");
+			 int sel = sn.nextInt();
+
+			 System.out.println("Enter first num");
+			 int num1 = sn.nextInt();
+			 System.out.println("Enter Second num");
+			 int num2 = sn.nextInt();
+
+			 if (sel==1) {
+			 	System.out.println("Value is "+calcu.add(num1,num2));
+
+			 }if (sel==2) {
+			 	System.out.println("Value is "+calcu.sub(num1,num2));
+			 }if (sel==3) {
+			 	System.out.println("Value is "+calcu.mul(num1,num2));
+			 }if (sel==4) {
+			 	System.out.println("Value is "+calcu.div(num1,num2));
+			 }
+			}catch(Exception e){
+			 	System.out.print("Error"+e);
+			 }
+		
+	}
+}
+
+4) calServer.java
+import java.rmi.*;
+import java.rmi.registry.*;
+
+public class calServer {
+	public static void main(String[] args) {
+		try{
+			cal cal1 = new cal();
+			Naming.rebind("calculator",cal1);
+			System.out.println("Server started..!");
+		}catch(Exception e){
+			System.out.print("Error is:"+e);
+		}
+	}
+}
+
+<-- total & avg --> 
+
+1)sum.java
+
+import java.rmi.*;
+import java.rmi.server.*;
+
+public class sum extends UnicastRemoteObject implements sumInterface{
+	public sum() throws RemoteException{}
+
+	public int tol(int a, int b, int c) throws RemoteException{
+		return a+b+c;
+	}
+	public int avg(int a, int b ,int c) throws RemoteException{
+		return (a+b+c)/3;
+	}
+}
+
+2)sumInterface.java
+import java.rmi.*;
+
+public interface sumInterface extends Remote {
+	public int tol(int a, int b, int c) throws RemoteException;
+	public int avg(int a, int b, int c) throws RemoteException;
+}
+
+3)sumClient.java
+
+import java.rmi.*;
+import java.util.Scanner;
+
+public class sumClient{
+	public static void main(String[] args) {
+		try{
+			sumInterface sumobject = (sumInterface)Naming.lookup("sum");
+			Scanner sr = new Scanner(System.in);
+
+			System.out.println("Enter the Mark :");
+			int a = sr.nextInt();
+			System.out.println("Enter the Mark :");
+			int b = sr.nextInt();
+			System.out.println("Enter the Mark :");
+			int c = sr.nextInt();
+
+			System.out.println("The Total marks is: "+sumobject.tol(a,b,c));
+			System.out.println("The Avarage is: "+sumobject.avg(a,b,c));
+
+		}catch(Exception e){
+			System.out.println("Error is:"+e);
+		}
+	}
+}
+
+4)sumServer.java
+import java.rmi.*;
+import java.rmi.registry.*;
+
+public class sumServer{
+	public static void main(String[] args) {
+		try{
+			sum sum1 = new sum();
+			Naming.rebind("sum",sum1);
+		}catch(Exception e){
+			System.out.println("Error is:"+e);
+		}
+	}
+}
